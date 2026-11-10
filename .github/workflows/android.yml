@@ -1,8 +1,11 @@
 name: Android CI — PS Launcher
 
+# MANUAL ONLY — do NOT run on push.
+# File uploads go one-by-one via the Contents API, and every push
+# would start a build on an incomplete tree and show an error.
+# Trigger this once, from the Actions tab (or API dispatch),
+# AFTER all files are uploaded and updated.
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,19 +13,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+
+      # setup-android@v3 defaults to the obsolete `tools` package,
+      # which Google removed — that fails with sdkmanager exit 1.
+      # Install ONLY the explicit packages this project needs
+      # (compileSdk 34).
       - uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+
       - uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: "8.9"
+
       - name: Build debug APK
-        # No gradle wrapper in repo — use the installed Gradle directly.
-        run: gradle assembleDebug --no-daemon
+        # No gradle wrapper in the repo — use the installed Gradle.
+        run: gradle assembleDebug --no-daemon --stacktrace
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ps-launcher-debug
           path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
