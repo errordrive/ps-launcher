@@ -4,9 +4,7 @@ import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
-import android.view.WindowManager
 
 /**
  * Game Booster — optimise the PHONE, not the game binary.
@@ -49,7 +47,10 @@ class GameBooster(private val context: Context) {
         }
 
         // 3. Brightness: remember, then max (light mode: leave brightness alone).
-        if (!light) {
+        // AUDIT FIX: Settings.System writes need WRITE_SETTINGS *and* the
+        // user granting it (Settings.System.canWrite) — without the grant
+        // putInt throws, so check first instead of relying on try/catch.
+        if (!light && Settings.System.canWrite(context)) {
             try {
                 savedBrightness = Settings.System.getInt(
                     context.contentResolver, Settings.System.SCREEN_BRIGHTNESS
