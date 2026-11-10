@@ -35,7 +35,14 @@ jobs:
           # one — resolve both defensively instead of hardcoding.
           SDK_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           echo "SDK_HOME=$SDK_HOME"
-          SDKMANAGER="$(find "$SDK_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager -type f | sort | head -n 1)"
+          # AUDIT FIX #2: my earlier find used -maxdepth 2, but
+          # sdkmanager lives at cmdline-tools/latest/bin/sdkmanager
+          # (depth 4) — the find returned empty and `test -x ""`
+          # failed the step in 8 seconds (run 42876285564).
+          SDKMANAGER="$SDK_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$SDK_HOME/cmdline-tools" -name sdkmanager -type f | sort | head -n 1)"
+          fi
           echo "sdkmanager: $SDKMANAGER"
           test -x "$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses
