@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0B0B12">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PS4 / PS5 Hub"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="PS4/PS5 games don't run inside Android. They stream from YOUR OWN console via Remote Play, or from PS Plus cloud. No PKG, no BIOS, no fake emulator in this app."
+            android:textColor="#FCA5A5" />
+
+        <TextView
+            android:id="@+id/psStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="#C7D2FE" />
+
+        <EditText
+            android:id="@+id/editConsoleIp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Console IP — e.g. 192.168.1.20"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888" />
+
+        <EditText
+            android:id="@+id/editPsnId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="PSN ID (optional)"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#888888" />
+
+        <Button
+            android:id="@+id/btnSaveConsole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Save console" />
+
+        <Button
+            android:id="@+id/btnLaunchRemotePlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="▶ Launch PS Remote Play" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Setup: 1) PS4/PS5 on, Remote Play enabled in Settings. 2) Phone + console on same Wi-Fi. 3) Pair your DualSense/DualShock over Bluetooth. 4) Tap Launch above."
+            android:textColor="#9AA0B0" />
+    </LinearLayout>
+</ScrollView>
