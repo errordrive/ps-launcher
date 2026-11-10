@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- AUDIT FIX: GameBooster writes SCREEN_BRIGHTNESS via Settings.System —
+         without this the write throws and brightness silently never changes. -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- Controllers: DualShock / DualSense over Bluetooth -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-feature android:name="android.hardware.gamepad" android:required="false" />
