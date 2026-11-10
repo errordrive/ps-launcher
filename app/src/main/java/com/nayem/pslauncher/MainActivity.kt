@@ -37,10 +37,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // AUDIT FIX: statusText must exist BEFORE the gamepad callback
+        // can touch it — it was created first and used statusText
+        // before findViewById ran (latent crash on a fast pad event).
+        statusText = findViewById(R.id.statusText)
         booster = GameBooster(this)
         gamepad = GamepadManager(this) { msg -> statusText.text = msg }
 
-        statusText = findViewById(R.id.statusText)
+        // AUDIT FIX: the virtual pad was drawn but never wired up.
+        findViewById<com.nayem.pslauncher.controller.VirtualControllerView>(R.id.virtualPad)
+            .onButton = { msg -> statusText.text = "Virtual pad: $msg" }
+
         val list = findViewById<RecyclerView>(R.id.gameList)
         list.layoutManager = LinearLayoutManager(this)
         adapter = GameAdapter { game -> launchGame(game) }
