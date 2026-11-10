@@ -30,9 +30,16 @@ jobs:
       # each package as its own quoted argument.
       - name: Install Android SDK 34
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          # AUDIT FIX: ANDROID_HOME is not guaranteed to be set in a
+          # run step, and cmdline-tools/latest is the preinstalled
+          # one — resolve both defensively instead of hardcoding.
+          SDK_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "SDK_HOME=$SDK_HOME"
+          SDKMANAGER="$(find "$SDK_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager -type f | sort | head -n 1)"
+          echo "sdkmanager: $SDKMANAGER"
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - uses: gradle/actions/setup-gradle@v3
         with:
