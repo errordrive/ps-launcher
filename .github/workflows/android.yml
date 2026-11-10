@@ -19,16 +19,20 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      # setup-android@v3 defaults to the obsolete `tools` package,
-      # which Google removed — that fails with sdkmanager exit 1.
-      # Install ONLY the explicit packages this project needs
-      # (compileSdk 34).
-      - uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            platforms;android-34
-            build-tools;34.0.0
+      # Do NOT use android-actions/setup-android@v3 here.
+      # It failed twice (runs 42875395034, 42875721450):
+      # it passes its `packages` input to sdkmanager as ONE
+      # package name with embedded newlines —
+      # "Failed to find package 'platform-tools\nplatforms;android-34\nbuild-tools;34.0.0'"
+      # The runner already has an Android SDK preinstalled
+      # (ANDROID_HOME=/usr/local/lib/android/sdk), so install
+      # the exact SDK 34 pieces with sdkmanager directly,
+      # each package as its own quoted argument.
+      - name: Install Android SDK 34
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - uses: gradle/actions/setup-gradle@v3
         with:
